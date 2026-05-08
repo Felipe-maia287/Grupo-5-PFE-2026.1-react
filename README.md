@@ -1,10 +1,10 @@
-# 🌐 ACBrasil — Versão Vanilla
+# ACBrasil — Versão Vanilla
 
 Repositório da versão **HTML, CSS e JavaScript puro** do site oficial da ACBrasil, desenvolvida pelo grupo como parte do processo de reconstrução e modernização da presença digital da organização.
 
 ---
 
-## 📋 Sobre o Projeto
+## Sobre o Projeto
 
 Este projeto consiste na implementação do site da ACBrasil utilizando tecnologias web nativas — sem frameworks ou bibliotecas externas — garantindo leveza, performance e total controle sobre o código.
 
@@ -16,7 +16,7 @@ A versão vanilla serve como base sólida e documentada do projeto, focando em:
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+## Tecnologias Utilizadas
 
 | Tecnologia | Descrição |
 |---|---|
@@ -26,7 +26,7 @@ A versão vanilla serve como base sólida e documentada do projeto, focando em:
 
 ---
 
-## 👥 Equipe
+## Equipe
 
 Projeto desenvolvido pelo seguinte grupo:
 
