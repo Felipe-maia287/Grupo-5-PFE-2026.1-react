@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contato - ACBrasil</title>
+    <link rel="stylesheet" href="./CSS/style.css">
+</head>
+<body>
+
+    <nav>
+        <div class="logo-container">
+            <div class="logo-box">ACB</div>
+            <div style="font-size: 10px; line-height: 1;">ASSOCIAÇÃO DE<br>CONSELHEIROS DO BRASIL</div>
+        </div>
+        <div class="nav-links">
+            <a href="./index.html">Início</a>
+            <a href="#">O que fazemos</a>
+            <a href="./HTML/artigos.html">Artigos</a>
+            <a href="#">Quem somos</a>
+            <a href="./contato.html" style="color: var(--accent-yellow);">Contato</a>
+            <a href="./sejamembro.html">Seja Membro</a>
+        </div>
+        <button class="btn-membro">Área do Membro</button>
+    </nav>
+
+    <!-- Cabeçalho da Página -->
+    <section class="contact-header">
+        <h1>Entre em contato com a ACB</h1>
+        <p>Utilize o formulário abaixo para os nossos canais diretos.<br>Responderemos o mais breve possível</p>
+    </section>
+
+    <!-- Formulário de Contato -->
+    <main class="contact-main">
+        <div class="contact-form-container">
+            <div class="contact-form-grid">
+
+                <div class="contact-form-group">
+                    <label for="nome">Nome Completo</label>
+                    <input type="text" id="nome" name="nome" placeholder="" required>
+                </div>
+
+                <div class="contact-form-group">
+                    <label for="email">Seu E-mail</label>
+                    <input type="email" id="email" name="email" placeholder="" required>
+                </div>
+
+                <div class="contact-form-group">
+                    <label for="assunto">Assunto</label>
+                    <input type="text" id="assunto" name="assunto" placeholder="" required>
+                </div>
+
+                <div class="contact-form-group">
+                    <label for="mensagem">Sua mensagem ( máx. 500 caracteres )</label>
+                    <textarea id="mensagem" name="mensagem" maxlength="500" rows="5" required></textarea>
+                </div>
+
+                <button type="button" class="btn-contact-submit" onclick="enviarFormulario()">ENVIAR</button>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Rodapé -->
+    <footer>
+        <div class="footer-grid">
+            <div>
+                <div class="logo-box" style="display: inline-block; margin-bottom: 1rem;">ACB</div>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1rem;">Liderança e governança no cenário empresarial brasileiro.</p>
+                <p style="font-size: 0.8rem; opacity: 0.6;">Associação sem fins lucrativos</p>
+            </div>
+            <div>
+                <h4>Navegação</h4>
+                <p style="font-size: 0.9rem; margin-top: 10px; line-height: 2.2;">
+                    <a href="./index.html" style="color: var(--white); text-decoration: none;">Início</a><br>
+                    <a href="#" style="color: var(--white); text-decoration: none;">O que fazemos</a><br>
+                    <a href="./HTML/artigos.html" style="color: var(--white); text-decoration: none;">Artigos</a><br>
+                    <a href="#" style="color: var(--white); text-decoration: none;">Quem somos</a>
+                </p>
+            </div>
+            <div>
+                <h4>Contato</h4>
+                <p style="font-size: 0.9rem; margin-top: 10px; line-height: 2;">
+                    Email: contato@acbrasil.org<br>
+                    Telefone: (21) 0000-0000
+                </p>
+                <div class="footer-social">
+                    <a href="#" title="Instagram">📷</a>
+                    <a href="#" title="LinkedIn">💼</a>
+                    <a href="#" title="GitHub">💻</a>
+                    <a href="#" title="YouTube">▶️</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            © 2026 Associação de Conselheiros do Brasil. Todos os direitos reservados.
+        </div>
+    </footer>
+
+    <script>
+        function enviarFormulario() {
+            const nome = document.getElementById('nome').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const assunto = document.getElementById('assunto').value.trim();
+            const mensagem = document.getElementById('mensagem').value.trim();
+
+            if (!nome || !email || !assunto || !mensagem) {
+                alert('Por favor, preencha todos os campos.');
+                return;
+            }
+
+            alert('Mensagem enviada com sucesso! Entraremos em contato em breve.');
+            document.getElementById('nome').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('assunto').value = '';
+            document.getElementById('mensagem').value = '';
+        }
+    </script>
+
+</body>
+</html>
