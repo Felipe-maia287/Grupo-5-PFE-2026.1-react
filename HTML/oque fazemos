@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACBrasil - O que fazemos</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <nav class="container">
+            <div class="logo">ACBrasil</div>
+            <ul>
+                <li><a href="#">Início</a></li>
+                <li><a href="#">O que fazemos</a></li>
+                <li><a href="#">Artigos</a></li>
+                <li><a href="#">Quem somos</a></li>
+                <li><a href="#">Contato</a></li>
+            </ul>
+            <button class="btn-member">Área do Membro</button>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container hero-content">
+                <p class="subtitle">O que fazemos?</p>
+                <h1>Nossa atuação no mercado de conselhos</h1>
+                <p class="description">Capacitando, conectando e apoiando conselheiros para fortalecer a governança corporativa no Brasil</p>
+                <p class="highlight">Atuamos de forma integrada para desenvolver profissionais, fortalecer conexões estratégicas e promover excelência na atuação de conselheiros.</p>
+            </div>
+        </section>
+
+        <section class="services container">
+            <div class="card">
+                <div class="card-img" style="background-image: url('https://via.placeholder.com/300x200')"></div>
+                <h3>Educação Executiva</h3>
+                <p>Programas avançados, capacitação contínua e workshops práticos para conselheiros.</p>
+            </div>
+            <div class="card">
+                <div class="card-img" style="background-image: url('https://via.placeholder.com/300x200')"></div>
+                <h3>Networking & Eventos</h3>
+                <p>Conectamos líderes por meio de eventos exclusivos e uma rede altamente qualificada.</p>
+            </div>
+            <div class="card">
+                <div class="card-img" style="background-image: url('https://via.placeholder.com/300x200')"></div>
+                <h3>Apoio Institucional</h3>
+                <p>Fomento às melhores práticas de governança ética e transparência corporativa.</p>
+            </div>
+            <div class="card">
+                <div class="card-img" style="background-image: url('https://via.placeholder.com/300x200')"></div>
+                <h3>Consultoria Especializada</h3>
+                <p>Mentoria e suporte estratégico para atuação em conselhos de administração e fiscal.</p>
+            </div>
+        </section>
+
+        <div class="cta-section">
+            <button class="btn-cta">Quero fazer parte da ACB</button>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
