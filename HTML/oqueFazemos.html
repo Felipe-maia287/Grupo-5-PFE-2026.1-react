@@ -4,7 +4,237 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ACBrasil - O que fazemos</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --navy: #0a2647;
+            --gold: #f4b41a;
+            --text: #333;
+            --light-bg: #e0e0e0;
+            --white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--white);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        header {
+            background: var(--navy);
+            padding: 15px 0;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--gold);
+        }
+
+        .btn-member {
+            background: var(--gold);
+            border: none;
+            padding: 8px 18px;
+            border-radius: 5px;
+            font-weight: bold;
+            color: var(--navy);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn-member:hover {
+            transform: scale(1.05);
+        }
+
+        .hero {
+            background: linear-gradient(rgba(255,255,255,0.75), rgba(255,255,255,0.75)), 
+                        url('https://www.transparenttextures.com/patterns/clouds.png');
+            background-color: #f0f4f8;
+            text-align: center;
+            padding: 100px 0 140px;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero .subtitle {
+            color: var(--navy);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .hero h1 {
+            color: var(--navy);
+            font-size: 48px;
+            margin: 20px 0;
+            line-height: 1.1;
+        }
+
+        .hero .description {
+            font-size: 1.2rem;
+            color: #444;
+            margin-bottom: 30px;
+        }
+
+        .hero .highlight {
+            font-weight: 600;
+            color: var(--navy);
+            font-size: 1.1rem;
+            padding: 0 20px;
+        }
+
+        .services {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: -80px;
+            padding-bottom: 60px;
+        }
+
+        .card {
+            background: var(--light-bg);
+            padding: 0 0 25px 0;
+            border-radius: 10px;
+            text-align: center;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-img {
+            height: 180px;
+            background-color: #ccc;
+            background-size: cover;
+            background-position: center;
+            margin-bottom: 20px;
+        }
+
+        .card h3 {
+            color: var(--navy);
+            margin: 0 15px 15px;
+            font-size: 20px;
+        }
+
+        .card p {
+            font-size: 0.95rem;
+            color: #555;
+            padding: 0 20px;
+        }
+
+        .cta-section {
+            text-align: center;
+            padding: 60px 0 100px;
+        }
+
+        .btn-cta {
+            background: var(--gold);
+            border: none;
+            padding: 18px 40px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 1rem;
+            color: var(--navy);
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(244, 180, 26, 0.3);
+            transition: background 0.3s;
+        }
+
+        .btn-cta:hover {
+            background: #e0a518;
+        }
+
+        footer {
+            background: var(--navy);
+            color: white;
+            padding: 60px 0 20px;
+            font-size: 0.9rem;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-col h4 {
+            color: var(--gold);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-col a {
+            color: #ccc;
+            text-decoration: none;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 20px;
+            color: #888;
+        }
+
+        @media (max-width: 768px) {
+            nav ul { display: none; }
+            .hero h1 { font-size: 32px; }
+        }
+    </style>
 </head>
 <body>
 
@@ -12,12 +242,11 @@
         <nav class="container">
             <div class="logo">ACBrasil</div>
             <ul>
-                <li><a href="../index.html">Início</a></li>
+                <li><a href="#">Início</a></li>
                 <li><a href="#">O que fazemos</a></li>
-                <li><a href="./artigos.html">Artigos</a></li>
+                <li><a href="#">Artigos</a></li>
                 <li><a href="#">Quem somos</a></li>
-                <li><a href="./contato.html">Contato</a></li>
-                <li><a href="./sejamembro.html">Seja Membro</a></li>
+                <li><a href="#">Contato</a></li>
             </ul>
             <button class="btn-member">Área do Membro</button>
         </nav>
@@ -35,22 +264,22 @@
 
         <section class="services container">
             <div class="card">
-                <div class="card-img" style="background-image: url('https://via.placeholder.com/300x200')"></div>
+                <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=400')"></div>
                 <h3>Educação Executiva</h3>
                 <p>Programas avançados, capacitação contínua e workshops práticos para conselheiros.</p>
             </div>
             <div class="card">
-                <div class="card-img" style="background-image: url('https://via.placeholder.com/300x200')"></div>
+                <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1528605248644-14dd04322a11?auto=format&fit=crop&q=80&w=400')"></div>
                 <h3>Networking & Eventos</h3>
                 <p>Conectamos líderes por meio de eventos exclusivos e uma rede altamente qualificada.</p>
             </div>
             <div class="card">
-                <div class="card-img" style="background-image: url('https://via.placeholder.com/300x200')"></div>
+                <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&q=80&w=400')"></div>
                 <h3>Apoio Institucional</h3>
                 <p>Fomento às melhores práticas de governança ética e transparência corporativa.</p>
             </div>
             <div class="card">
-                <div class="card-img" style="background-image: url('https://via.placeholder.com/300x200')"></div>
+                <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1454165833767-027ffea7025c?auto=format&fit=crop&q=80&w=400')"></div>
                 <h3>Consultoria Especializada</h3>
                 <p>Mentoria e suporte estratégico para atuação em conselhos de administração e fiscal.</p>
             </div>
@@ -61,6 +290,33 @@
         </div>
     </main>
 
-    <script src="script.js"></script>
+    <footer>
+        <div class="container footer-grid">
+            <div class="footer-col">
+                <h4>Institucional</h4>
+                <p>Associação de Conselheiros do Brasil</p>
+            </div>
+            <div class="footer-col">
+                <h4>Navegação</h4>
+                <ul>
+                    <li><a href="#">Início</a></li>
+                    <li><a href="#">O que fazemos</a></li>
+                    <li><a href="#">Artigos</a></li>
+                    <li><a href="#">Quem somos</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Contato</h4>
+                <ul>
+                    <li>Email: contato@acbrasil.org</li>
+                    <li>Telefone: (21) 0000-0000</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Associação de Conselheiros do Brasil. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
 </body>
 </html>
