@@ -407,3 +407,126 @@
     .article-item img { width: 100%; }
     .articles-page-header { flex-direction: column; gap: 15px; }
 }
+.contact-header {
+    text-align: center;
+    padding: 60px 5% 40px;
+    background-color: var(--white);
+}
+ 
+.contact-header h1 {
+    color: var(--primary-blue);
+    font-size: 2.8rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+}
+ 
+.contact-header p {
+    color: #555;
+    font-size: 1rem;
+    line-height: 1.7;
+}
+ 
+.contact-main {
+    background-color: var(--white);
+    padding: 0 5% 80px;
+}
+ 
+.contact-form-container {
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: var(--white);
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 40px 50px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+ 
+.contact-form-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+ 
+.contact-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+ 
+.contact-form-group label {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--primary-blue);
+}
+ 
+.contact-form-group input,
+.contact-form-group textarea {
+    padding: 12px 15px;
+    border-radius: 6px;
+    border: 1.5px solid #ccc;
+    font-size: 1rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    transition: border-color 0.2s;
+    background-color: #fafafa;
+    color: var(--text-gray);
+    resize: none;
+}
+ 
+.contact-form-group input:focus,
+.contact-form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    background-color: var(--white);
+}
+ 
+.btn-contact-submit {
+    background-color: var(--accent-yellow);
+    color: var(--primary-blue);
+    border: none;
+    padding: 15px;
+    font-weight: bold;
+    font-size: 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 10px;
+    transition: opacity 0.2s, transform 0.1s;
+}
+ 
+.btn-contact-submit:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+ 
+.btn-contact-submit:active {
+    transform: translateY(0);
+}
+ 
+.footer-social {
+    display: flex;
+    gap: 12px;
+    margin-top: 15px;
+    font-size: 1.2rem;
+}
+ 
+.footer-social a {
+    text-decoration: none;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+ 
+.footer-social a:hover {
+    opacity: 1;
+}
+ 
+@media (max-width: 768px) {
+    .contact-header h1 {
+        font-size: 2rem;
+    }
+ 
+    .contact-form-container {
+        padding: 30px 25px;
+    }
+}
+ 
