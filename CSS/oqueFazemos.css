@@ -1,5 +1,5 @@
 :root {
-    --navy: #0a2647;
+    --navy: #002B5B;
     --gold: #f4b41a;
     --text: #333;
     --light-bg: #e0e0e0;
@@ -26,6 +26,7 @@ header {
 
 nav {
     display: flex;
+    color: #002B5B;
     justify-content: space-between;
     align-items: center;
 }
