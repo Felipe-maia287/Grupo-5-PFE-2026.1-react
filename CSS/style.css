@@ -194,7 +194,7 @@ footer {
 
 .articles-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(5 , 1fr);
     gap: 20px;
 }
 
@@ -770,4 +770,21 @@ footer {
     .article-item, .featured-article { flex-direction: column; }
     .article-item img { width: 100%; }
     .articles-page-header { flex-direction: column; gap: 15px; }
+}
+/* Faixa de slogan */
+.slogan-bar {
+    background-color: #f0f0f0;
+    text-align: center;
+    padding: 14px 5%;
+    font-size: 0.9rem;
+    color: #444;
+    border-bottom: 1px solid #ddd;
+}/* Faixa de slogan */
+.slogan-bar {
+    background-color: #f0f0f0;
+    text-align: center;
+    padding: 14px 5%;
+    font-size: 0.9rem;
+    color: #444;
+    border-bottom: 1px solid #ddd;
 }
