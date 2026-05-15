@@ -131,6 +131,9 @@ footer {
     text-decoration: none;
     opacity: 0.8;
     transition: opacity 0.2s;
+    display: flex;
+    align-items: center;
+    color: var(--white);
 }
 
 .footer-social a:hover {
@@ -694,9 +697,9 @@ footer {
 
 .team-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 25px;
-    max-width: 1100px;
+    max-width: 900px;
     margin: 0 auto;
 }
 
@@ -711,6 +714,10 @@ footer {
 }
 
 .team-card:hover { transform: translateY(-5px); }
+
+.team-card:last-child:nth-child(3n+1) {
+    grid-column: 2;
+}
 
 .team-avatar {
     width: 80px;
