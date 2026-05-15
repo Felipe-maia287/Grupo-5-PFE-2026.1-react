@@ -209,7 +209,7 @@ footer {
 
 .articles-grid {
     display: grid;
-    grid-template-columns: repeat(5 , 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 20px;
 }
 
@@ -266,12 +266,16 @@ footer {
    ARTIGOS
    ===================== */
 .articles-page-header {
+    background: var(--white);
+    border-bottom: 1px solid #eee;
+    padding: 20px 5% 0;
+}
+
+.articles-header-top {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 5%;
-    background: var(--white);
-    border-bottom: 1px solid #eee;
+    padding-bottom: 16px;
 }
 
 .articles-page-header h2 {
@@ -279,17 +283,89 @@ footer {
     font-size: 1.8rem;
 }
 
-.filters {
-    display: flex;
-    gap: 20px;
-    font-size: 0.9rem;
-    color: #666;
+.filters-row-wrapper {
+    position: relative;
+    border-top: 1px solid #f0f0f0;
 }
 
-.filters span { cursor: pointer; }
+/* Fade esquerda */
+.filters-row-wrapper::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 4px;
+    width: 40px;
+    background: linear-gradient(to right, rgba(255,255,255,1), rgba(255,255,255,0));
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+/* Fade direita */
+.filters-row-wrapper::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 4px;
+    width: 40px;
+    background: linear-gradient(to left, rgba(255,255,255,1), rgba(255,255,255,0));
+    z-index: 2;
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity 0.3s;
+}
+
+.filters-row-wrapper.can-scroll-left::before { opacity: 1; }
+.filters-row-wrapper.no-scroll-right::after { opacity: 0; }
+
+.filters-row {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-yellow) #f0f0f0;
+}
+
+.filters-row::-webkit-scrollbar {
+    height: 3px;
+}
+
+.filters-row::-webkit-scrollbar-track {
+    background: #f0f0f0;
+}
+
+.filters-row::-webkit-scrollbar-thumb {
+    background-color: var(--accent-yellow);
+    border-radius: 3px;
+}
+
+.filters {
+    display: flex;
+    gap: 0;
+    font-size: 0.9rem;
+    color: #666;
+    white-space: nowrap;
+    min-width: max-content;
+}
+
+.filters span {
+    cursor: pointer;
+    padding: 12px 20px;
+    border-bottom: 3px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+    flex-shrink: 0;
+}
+
+.filters span:hover {
+    color: var(--primary-blue);
+}
+
 .filters span.active {
     color: var(--primary-blue);
     font-weight: bold;
+    border-bottom: 3px solid var(--accent-yellow);
 }
 
 .search-bar input {
@@ -383,7 +459,7 @@ footer {
     flex-wrap: wrap;
     border-top: 1px solid #ddd;
     border-bottom: 1px solid #ddd;
-    margin: 0 10%;
+    margin: 0 5%;
 }
 
 .benefit-item { max-width: 250px; }
@@ -715,6 +791,21 @@ footer {
     margin: 0 auto;
 }
 
+@media (max-width: 700px) {
+    .team-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .team-card:last-child:nth-child(3n+1) {
+        grid-column: auto;
+    }
+}
+
+@media (max-width: 420px) {
+    .team-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 .team-card {
     background: var(--white);
     border-radius: 10px;
@@ -841,12 +932,31 @@ footer {
     .contact-form-container { padding: 30px 25px; }
     .form-grid { grid-template-columns: 1fr; }
     .checkbox-group, .btn-submit, .form-footer-link { grid-column: span 1; }
+
+    /* Seja membro */
+    .form-container { padding: 30px 20px; margin: 30px auto; }
+    .membership-header h1 { font-size: 1.6rem; }
+    .benefit-item { max-width: 100%; width: 100%; }
+
+    /* Market cards */
+    .market-cards-container { flex-direction: column; }
+    .market-card { min-width: unset; }
+
+    /* Missão / Visão */
+    .missao-section { padding: 2rem 5%; }
+
+    /* Footer */
+    .footer-grid { grid-template-columns: 1fr; gap: 25px; }
 }
 
 @media (max-width: 900px) {
     .article-item, .featured-article { flex-direction: column; }
     .article-item img { width: 100%; }
-    .articles-page-header { flex-direction: column; gap: 15px; }
+    .articles-header-top { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .team-grid { grid-template-columns: repeat(2, 1fr); }
+    .team-card:last-child:nth-child(3n+1) { grid-column: auto; }
+    .services-grid { grid-template-columns: repeat(2, 1fr); }
+    .featured-image { min-height: 220px; }
 }
 
 /* Faixa de slogan */

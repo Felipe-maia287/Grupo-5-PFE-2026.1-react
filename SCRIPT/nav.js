@@ -7,11 +7,23 @@ document.addEventListener("DOMContentLoaded", function() {
     var menu = document.getElementById("menu");
 
     if (menuButton && menu) {
-        menuButton.addEventListener("click", function() {
-            if (menu.style.display === "block") {
+        // Abre/fecha ao clicar no botão hambúrguer
+        menuButton.addEventListener("click", function(e) {
+            e.stopPropagation();
+            menu.style.display = menu.style.display === "block" ? "none" : "block";
+        });
+
+        // Fecha ao clicar em qualquer link dentro do menu
+        menu.querySelectorAll("a").forEach(function(link) {
+            link.addEventListener("click", function() {
                 menu.style.display = "none";
-            } else {
-                menu.style.display = "block";
+            });
+        });
+
+        // Fecha ao clicar fora do menu
+        document.addEventListener("click", function(e) {
+            if (!menu.contains(e.target) && e.target !== menuButton) {
+                menu.style.display = "none";
             }
         });
     }
@@ -20,6 +32,19 @@ document.addEventListener("DOMContentLoaded", function() {
     // 2. CHAMA A FUNÇÃO DA API DA BOLSA
     // ==========================================
     carregarDadosBolsa(); // É ESTA LINHA QUE FALTAVA PARA ACORDAR A API!
+
+    // ==========================================
+    // 3. DESTACAR LINK ATIVO NA NAVEGAÇÃO
+    // ==========================================
+    var currentPage = window.location.pathname.split('/').pop();
+    document.querySelectorAll('.nav-links a').forEach(function(link) {
+        var linkPage = link.getAttribute('href').split('/').pop();
+        if (linkPage && linkPage === currentPage) {
+            link.style.color = 'var(--accent-yellow)';
+            link.style.borderBottom = '2px solid var(--accent-yellow)';
+            link.style.paddingBottom = '2px';
+        }
+    });
 });
 
 

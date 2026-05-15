@@ -22,7 +22,7 @@
             <a href="./quemsomos.html">Quem Somos</a>
             <a href="./contato.html">Contato</a>
         </div>
-        <a href="./sejamembro.html" class="btn-desktop-membro"><button class="btn-membro">Área do Membro</button></a>
+        <a href="./sejamembro.html" class="btn-desktop-membro btn-membro" style="padding: 8px 16px; font-weight: bold; border-radius: 4px; text-decoration: none; background-color: var(--accent-yellow); color: var(--primary-blue);">Área do Membro</a>
 
         <div id="menu">
             <ul>
@@ -38,16 +38,18 @@
 
     <!-- Barra de Filtros e Busca -->
     <div class="articles-page-header">
-        <div style="display: flex; align-items: center; gap: 30px;">
+        <div class="articles-header-top">
             <h2>Artigos</h2>
-            <!-- Filtros de categoria gerados dinamicamente via JS -->
+            <div class="search-bar">
+                <input type="text" id="search-input" placeholder="🔍 Buscar">
+            </div>
+        </div>
+        <!-- Filtros de categoria em linha própria com scroll horizontal -->
+        <div class="filters-row">
             <div class="filters" id="category-filters">
                 <span class="active" data-category-id="">Todos</span>
                 <!-- Categorias adicionadas via JS -->
             </div>
-        </div>
-        <div class="search-bar">
-            <input type="text" id="search-input" placeholder="🔍 Buscar">
         </div>
     </div>
 
