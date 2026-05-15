@@ -6,6 +6,7 @@
     <title>ACB - Associação de Conselheiros do Brasil</title>
     <link rel="stylesheet" href="./CSS/style.css">
 </head>
+
 <body>
 
     <nav>
@@ -125,61 +126,7 @@
         </div>
     </section>
 
-    <!-- COTAÇÕES DA BOLSA -->
-<section class="container" style="padding: 2rem 0 0;">
-  <h2 class="section-title">Mercado de Capitais</h2>
-
-  <div id="ticker-grid" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; margin-top:1rem;"></div>
-  <p id="ticker-updated" style="font-size:11px; color:#888; margin-top:12px;"></p>
-</section>
-
-<script>
-const tickers = [
-  { symbol: '^BVSP',    display: 'IBOV',   name: 'Ibovespa' },
-  { symbol: 'PETR4.SA', display: 'PETR4',  name: 'Petrobras PN' },
-  { symbol: 'VALE3.SA', display: 'VALE3',  name: 'Vale ON' },
-  { symbol: 'ITUB4.SA', display: 'ITUB4',  name: 'Itaú Unibanco' },
-  { symbol: 'BBDC4.SA', display: 'BBDC4',  name: 'Bradesco PN' },
-];
-
-async function fetchQuotes() {
-  const syms = tickers.map(t => t.symbol).join(',');
-  const url = `https://query1.finance.yahoo.com/v8/finance/quote?symbols=${syms}&lang=pt-BR&region=BR`;
-  try {
-    const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
-    const data = await res.json();
-    return data?.quoteResponse?.result || [];
-  } catch(e) { return []; }
-}
-
-function renderCards(results) {
-  const grid = document.getElementById('ticker-grid');
-  if (!results.length) {
-    grid.innerHTML = '<p>Não foi possível carregar as cotações.</p>';
-    return;
-  }
-  grid.innerHTML = tickers.map(t => {
-    const r = results.find(x => x.symbol === t.symbol);
-    if (!r) return '';
-    const price = r.regularMarketPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
-    const change = r.regularMarketChangePercent;
-    const color = change >= 0 ? '#4ade80' : '#f87171';
-    const arrow = change >= 0 ? '▲' : '▼';
-    return `
-      <div style="background:#0d2b4e;border-radius:10px;padding:14px 16px;">
-        <div style="font-size:13px;font-weight:700;color:#7eb8f7;">${t.display}</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.45);margin-top:2px;">${t.name}</div>
-        <div style="font-size:20px;font-weight:700;color:#fff;margin-top:10px;">${price}</div>
-        <div style="font-size:12px;font-weight:600;color:${color};margin-top:4px;">${arrow} ${Math.abs(change).toFixed(2)}%</div>
-      </div>`;
-  }).join('');
-  const now = new Date().toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
-  document.getElementById('ticker-updated').textContent = `Atualizado às ${now} · Fonte: Yahoo Finance`;
-}
-
-fetchQuotes().then(renderCards);
-</script>
-
+    
     <footer>
         <div class="footer-grid">
             <div>
