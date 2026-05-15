@@ -13,6 +13,9 @@
         <div class="logo-container">
             <img src="./IMG/logo-acb-fundo-escuro-1.png" alt="ACB Logo" style="height: 40px;">
         </div>
+        
+        <button id="menu-button">&#9776;</button>
+
         <div class="nav-links">
             <a href="./index.html">Início</a>
             <a href="./HTML/oqueFazemos.html">O que fazemos</a>
@@ -20,7 +23,18 @@
             <a href="./HTML/quemsomos.html">Quem Somos</a>
             <a href="./HTML/contato.html">Contato</a>
         </div>
-        <a href="./HTML/sejamembro.html"><button class="btn-membro">Área do Membro</button></a>
+        <a href="./HTML/sejamembro.html" class="btn-desktop-membro"><button class="btn-membro">Área do Membro</button></a>
+
+        <div id="menu">
+            <ul>
+                <li><a href="./index.html">Início</a></li>
+                <li><a href="./HTML/oqueFazemos.html">O que fazemos</a></li>
+                <li><a href="./HTML/artigos.html">Artigos</a></li>
+                <li><a href="./HTML/quemsomos.html">Quem Somos</a></li>
+                <li><a href="./HTML/contato.html">Contato</a></li>
+                <li><a href="./HTML/sejamembro.html" style="color: var(--accent-yellow); font-weight: bold;">Área do Membro</a></li>
+            </ul>
+        </div>
     </nav>
 
     <header class="hero">
@@ -30,7 +44,6 @@
         </div>
     </header>
 
-    <!-- Faixa de slogan -->
     <div class="slogan-bar">
         <p>Conectando conselheiros e lideranças para impulsionar as melhores práticas de governança e ética no cenário empresarial brasileiro.</p>
     </div>
@@ -162,5 +175,6 @@
         </div>
     </footer>
 
+    <script src="./SCRIPT/nav.js"></script>
 </body>
 </html>

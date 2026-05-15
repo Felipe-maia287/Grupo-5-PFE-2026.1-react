@@ -754,10 +754,68 @@ footer {
 }
 
 /* =====================
-   RESPONSIVIDADE
+   MENU HAMBÚRGUER (JS)
+   ===================== */
+/* 1. Esconde o botão e o menu no PC */
+#menu-button {
+    display: none;
+    background: transparent;
+    border: none;
+    color: var(--white);
+    font-size: 30px;
+    cursor: pointer;
+    padding: 0;
+}
+
+#menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: var(--primary-blue);
+    padding: 10px 5% 30px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+
+#menu ul {
+    list-style-type: none;
+}
+
+#menu li {
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+#menu li a {
+    color: var(--white);
+    text-decoration: none;
+    font-size: 1.2rem;
+    display: block;
+    transition: color 0.3s;
+}
+
+#menu li a:hover {
+    color: var(--accent-yellow);
+}
+
+/* =====================
+   RESPONSIVIDADE E ATIVAÇÃO
    ===================== */
 @media (max-width: 768px) {
-    .nav-links { display: none; }
+    /* Mostra o botão hambúrguer no celular */
+    #menu-button { 
+        display: block; 
+    }
+    
+    /* Esconde a navegação padrão do PC no celular */
+    .nav-links, 
+    .btn-desktop-membro { 
+        display: none; 
+    }
+
+    /* Outros ajustes responsivos do para o site */
     .hero-content h1 { font-size: 2rem; }
     .page-hero h1, .quem-hero h1 { font-size: 2rem; }
     .contact-header h1 { font-size: 2rem; }
@@ -771,15 +829,8 @@ footer {
     .article-item img { width: 100%; }
     .articles-page-header { flex-direction: column; gap: 15px; }
 }
+
 /* Faixa de slogan */
-.slogan-bar {
-    background-color: #f0f0f0;
-    text-align: center;
-    padding: 14px 5%;
-    font-size: 0.9rem;
-    color: #444;
-    border-bottom: 1px solid #ddd;
-}/* Faixa de slogan */
 .slogan-bar {
     background-color: #f0f0f0;
     text-align: center;
