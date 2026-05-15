@@ -7,24 +7,26 @@
     <link rel="stylesheet" href="../CSS/style.css">
 </head>
 <body>
-
+ 
     <nav>
         <div class="logo-container">
             <a href="../index.html"><img src="../IMG/logo-acb-fundo-escuro-1.png" alt="ACB Logo" style="height: 40px;"></a>
         </div>
-        
+ 
         <button id="menu-button">&#9776;</button>
-
+ 
         <div class="nav-links">
-<<<<<<< HEAD
             <a href="../index.html">Início</a>
             <a href="./oqueFazemos.html">O que fazemos</a>
             <a href="./artigos.html">Artigos</a>
             <a href="./quemsomos.html">Quem Somos</a>
             <a href="./contato.html">Contato</a>
         </div>
-        <a href="./sejamembro.html" class="btn-desktop-membro"><button class="btn-membro">Área do Membro</button></a>
-
+ 
+        <a href="./sejamembro.html" class="btn-desktop-membro">
+            <button class="btn-membro">Área do Membro</button>
+        </a>
+ 
         <div id="menu">
             <ul>
                 <li><a href="../index.html">Início</a></li>
@@ -35,22 +37,13 @@
                 <li><a href="./sejamembro.html" style="color: var(--accent-yellow); font-weight: bold;">Área do Membro</a></li>
             </ul>
         </div>
-=======
-            <a href="./index.html">Início</a>
-<a href="./oqueFazemos.html">O que fazemos</a>
-<a href="./artigos.html">Artigos</a>
-<a href="./quemsomos.html">Quem somos</a>
-<a href="./contato.html">Contato</a>
-<a href="./sejamembro.html">Seja Membro</a>
-        <button class="btn-membro">Área do Membro</button>
->>>>>>> c34beb52f4e8ea3b40382ce184cd8cb03544c893
     </nav>
-
+ 
     <header class="membership-header">
         <h1>SEJA MEMBRO ACBRASIL: Acelere sua carreira e conecte-se com líderes</h1>
         <p>A maior comunidade de Conselheiros e Profissionais do mercado financeiro e gestão do Brasil</p>
     </header>
-
+ 
     <section class="benefits-row">
         <div class="benefit-item">
             <h4>Rede global</h4>
@@ -65,57 +58,57 @@
             <p>● Participe de workshops e obtenha guias</p>
         </div>
     </section>
-
+ 
     <main class="container">
         <div class="form-container">
             <form class="form-grid">
                 <div class="form-group">
-                    <label>Nome</label>
-                    <input type="text" required>
+                    <label for="nome">Nome</label>
+                    <input type="text" id="nome" required>
                 </div>
                 <div class="form-group">
-                    <label>Sobrenome</label>
-                    <input type="text" required>
+                    <label for="sobrenome">Sobrenome</label>
+                    <input type="text" id="sobrenome" required>
                 </div>
                 <div class="form-group">
-                    <label>E-mail profissional</label>
-                    <input type="email" required>
+                    <label for="email">E-mail profissional</label>
+                    <input type="email" id="email" required>
                 </div>
                 <div class="form-group">
-                    <label>Telefone com DDD</label>
-                    <input type="tel" required>
+                    <label for="telefone">Telefone com DDD</label>
+                    <input type="tel" id="telefone" required>
                 </div>
                 <div class="form-group">
-                    <label>Empresa / Instituição</label>
-                    <input type="text" required>
+                    <label for="empresa">Empresa / Instituição</label>
+                    <input type="text" id="empresa" required>
                 </div>
                 <div class="form-group">
-                    <label>Cargo atual</label>
-                    <input type="text" required>
+                    <label for="cargo">Cargo atual</label>
+                    <input type="text" id="cargo" required>
                 </div>
                 <div class="form-group">
-                    <label>Linkedin (opcional)</label>
-                    <input type="url">
+                    <label for="linkedin">Linkedin (opcional)</label>
+                    <input type="url" id="linkedin">
                 </div>
                 <div class="form-group">
-                    <label>Cidade</label>
-                    <input type="text" required>
+                    <label for="cidade">Cidade</label>
+                    <input type="text" id="cidade" required>
                 </div>
-
+ 
                 <div class="checkbox-group">
                     <input type="checkbox" id="terms" required>
                     <label for="terms">Concordo com os termos e políticas de privacidade</label>
                 </div>
-
+ 
                 <button type="submit" class="btn-submit">Quero ser membro</button>
-
+ 
                 <div class="form-footer-link">
                     <a href="./contato.html">Alguma dúvida? Entre em contato</a>
                 </div>
             </form>
         </div>
     </main>
-
+ 
     <footer>
         <div class="footer-grid">
             <div class="footer-brand">
@@ -151,6 +144,7 @@
             © 2026 Associação de Conselheiros do Brasil. Todos os direitos reservados.
         </div>
     </footer>
+ 
     <script src="../SCRIPT/nav.js"></script>
 </body>
 </html>
