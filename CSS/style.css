@@ -94,6 +94,18 @@ footer {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 40px;
+    align-items: start;
+}
+
+.footer-brand img {
+    height: 60px;
+    margin-bottom: 0.6rem;
+    display: block;
+}
+
+.footer-brand p {
+    margin-bottom: 0.3rem;
+    line-height: 1.5;
 }
 
 .footer-grid h4 {
