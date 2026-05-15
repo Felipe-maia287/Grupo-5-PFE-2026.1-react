@@ -40,65 +40,40 @@
     <div class="articles-page-header">
         <div style="display: flex; align-items: center; gap: 30px;">
             <h2>Artigos</h2>
-            <div class="filters">
-                <span class="active">Todos</span>
-                <span>Governança</span>
-                <span>ESG</span>
-                <span>Carreira</span>
-                <span>Economia</span>
+            <!-- Filtros de categoria gerados dinamicamente via JS -->
+            <div class="filters" id="category-filters">
+                <span class="active" data-category-id="">Todos</span>
+                <!-- Categorias adicionadas via JS -->
             </div>
         </div>
         <div class="search-bar">
-            <input type="text" placeholder="🔍 Buscar">
+            <input type="text" id="search-input" placeholder="🔍 Buscar">
         </div>
     </div>
 
-    <!-- Artigo em Destaque -->
-    <section class="featured-article">
+    <!-- Artigo em Destaque (preenchido via JS) -->
+    <section class="featured-article" id="featured-article" style="display: none;">
         <div class="featured-content">
-            <span class="category">Governança</span>
-            <h3>A nova era da governança: Desafios e oportunidades para conselheiros</h3>
-            <p>Uma análise detalhada sobre as novas regulamentações e a tecnologia estão moldando o papel do conselheiro moderno.</p>
+            <span class="category" id="featured-category"></span>
+            <h3 id="featured-title"></h3>
+            <p id="featured-excerpt"></p>
             <br>
-            <a href="#" class="read-more-link">Leia o artigo completo ></a>
+            <a href="#" id="featured-link" class="read-more-link" target="_blank" rel="noopener">Leia o artigo completo &gt;</a>
         </div>
-        <div class="featured-image" style="background-image: url('https://images.unsplash.com/photo-1497366216548-37526070297c?w=800');"></div>
+        <div class="featured-image" id="featured-image"></div>
     </section>
 
-<!-- Lista de Artigos -->
-<main class="articles-list">
-    <article class="article-item">
-        <img src="../IMG/artigos_1.jpg" alt="Governança">
-        <div class="article-info">
-            <span class="category">Governança</span>
-            <h4>A nova era da governança: Desafios e oportunidades para conselheiros</h4>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...</p>
-            <a href="#" class="read-more-link">Leia o artigo completo ></a>
-        </div>
-    </article>
-
-    <article class="article-item">
-        <img src="../IMG/artigos_2.jpg" alt="Carreira">
-        <div class="article-info">
-            <span class="category">Carreira</span>
-            <h4>Planejamento Sucessório: O Desafio de Passar o Bastão em Momentos de Crise</h4>
-            <p>O processo de sucessão é um dos momentos mais críticos para qualquer conselho de administração...</p>
-            <a href="#" class="read-more-link">Leia o artigo completo ></a>
-        </div>
-    </article>
-
-    <article class="article-item">
-        <img src="../IMG/artigos_4.jpg" alt="ESG">
-        <div class="article-info">
-            <span class="category">ESG</span>
-            <h4>Greenwashing e o Risco de Imagem: O Que o Comitê de Auditoria Precisa Observar</h4>
-            <p>A crescente pressão por práticas sustentáveis trouxe novos riscos para a reputação corporativa...</p>
-            <a href="#" class="read-more-link">Leia o artigo completo ></a>
-        </div>
-    </article>
-
-        <button class="btn-show-more">MOSTRAR MAIS</button>
+    <!-- Lista de Artigos -->
+    <main class="articles-list" id="articles-list">
+        <p id="articles-loading" style="text-align:center; padding: 40px; color: #666;">Carregando artigos...</p>
+        <p id="articles-error" style="display:none; text-align:center; padding: 40px; color: #888;">Não foi possível carregar os artigos.</p>
+        <p id="articles-empty" style="display:none; text-align:center; padding: 40px; color: #888;">Nenhum artigo encontrado.</p>
     </main>
+
+    <!-- Botão Mostrar Mais -->
+    <div style="text-align: center; margin-bottom: 40px;">
+        <button class="btn-show-more" id="btn-show-more" style="display: none;">MOSTRAR MAIS</button>
+    </div>
 
     <footer>
         <div class="footer-grid">
@@ -135,6 +110,276 @@
             © 2026 Associação de Conselheiros do Brasil. Todos os direitos reservados.
         </div>
     </footer>
+
     <script src="../SCRIPT/nav.js"></script>
+
+    <script>
+        // ─────────────────────────────────────────────
+        // Configuração
+        // ─────────────────────────────────────────────
+        const API_BASE = 'https://acbrasil.org.br/cms/wp-json/wp/v2';
+        const PER_PAGE = 5; // artigos por página no "mostrar mais"
+
+        // Estado da aplicação
+        const state = {
+            allPosts: [],         // todos os posts carregados da API
+            filteredPosts: [],    // posts após filtro de categoria e busca
+            displayedCount: 0,    // quantos estão sendo exibidos
+            activeCategoryId: '', // '' = todos
+            searchQuery: '',
+        };
+
+        // ─────────────────────────────────────────────
+        // Utilitários
+        // ─────────────────────────────────────────────
+
+        function getFeaturedImageUrl(post) {
+            try {
+                const media = post._embedded?.['wp:featuredmedia']?.[0];
+                if (!media) return null;
+                const sizes = media.media_details?.sizes;
+                if (sizes) {
+                    return (
+                        sizes.medium_large?.source_url ||
+                        sizes.medium?.source_url ||
+                        sizes.large?.source_url ||
+                        sizes.full?.source_url
+                    );
+                }
+                return media.source_url || null;
+            } catch {
+                return null;
+            }
+        }
+
+        function getCategoryName(post) {
+            try {
+                const terms = post._embedded?.['wp:term'];
+                if (!terms) return '';
+                const cats = terms[0];
+                if (cats && cats.length > 0) return cats[0].name;
+            } catch {}
+            return '';
+        }
+
+        function stripHtml(html) {
+            const tmp = document.createElement('div');
+            tmp.innerHTML = html;
+            return tmp.textContent || tmp.innerText || '';
+        }
+
+        function truncate(text, maxLen) {
+            if (!text) return '';
+            return text.length > maxLen ? text.slice(0, maxLen).trimEnd() + '...' : text;
+        }
+
+        // ─────────────────────────────────────────────
+        // Artigo em destaque (primeiro da lista geral)
+        // ─────────────────────────────────────────────
+        function renderFeatured(post) {
+            const section = document.getElementById('featured-article');
+            if (!post) { section.style.display = 'none'; return; }
+
+            const imgUrl = getFeaturedImageUrl(post);
+            const category = getCategoryName(post);
+            const title = stripHtml(post.title?.rendered || '');
+            const excerpt = truncate(stripHtml(post.excerpt?.rendered || post.content?.rendered || ''), 200);
+
+            document.getElementById('featured-category').textContent = category;
+            document.getElementById('featured-title').textContent = title;
+            document.getElementById('featured-excerpt').textContent = excerpt;
+            document.getElementById('featured-link').href = post.link || '#';
+
+            const imgDiv = document.getElementById('featured-image');
+            if (imgUrl) {
+                imgDiv.style.backgroundImage = `url('${imgUrl}')`;
+            } else {
+                imgDiv.style.background = '#ccc';
+            }
+
+            section.style.display = '';
+        }
+
+        // ─────────────────────────────────────────────
+        // Lista de artigos
+        // ─────────────────────────────────────────────
+        function renderArticleItem(post) {
+            const imgUrl = getFeaturedImageUrl(post);
+            const category = getCategoryName(post);
+            const title = stripHtml(post.title?.rendered || 'Sem título');
+            const excerpt = truncate(stripHtml(post.excerpt?.rendered || post.content?.rendered || ''), 160);
+            const postUrl = post.link || '#';
+
+            const imgTag = imgUrl
+                ? `<img src="${imgUrl}" alt="${title}" loading="lazy" onerror="this.style.display='none'">`
+                : `<div style="width:200px;min-width:200px;height:140px;background:#eee;display:flex;align-items:center;justify-content:center;color:#aaa;border-radius:8px;">Sem imagem</div>`;
+
+            return `
+                <article class="article-item">
+                    ${imgTag}
+                    <div class="article-info">
+                        <span class="category">${category}</span>
+                        <h4>${title}</h4>
+                        <p>${excerpt}</p>
+                        <a href="${postUrl}" target="_blank" rel="noopener" class="read-more-link">Leia o artigo completo &gt;</a>
+                    </div>
+                </article>
+            `;
+        }
+
+        function renderArticlesList() {
+            const list = document.getElementById('articles-list');
+            const btnMore = document.getElementById('btn-show-more');
+            const emptyMsg = document.getElementById('articles-empty');
+
+            // Limpa apenas os artigos (mantém elementos de controle ocultos)
+            const existingItems = list.querySelectorAll('.article-item');
+            existingItems.forEach(el => el.remove());
+
+            if (state.filteredPosts.length === 0) {
+                emptyMsg.style.display = 'block';
+                btnMore.style.display = 'none';
+                return;
+            }
+
+            emptyMsg.style.display = 'none';
+
+            // Pula o primeiro post da lista global (que está no destaque) — apenas quando sem filtro
+            const postsToShow = state.filteredPosts;
+            const slice = postsToShow.slice(0, state.displayedCount);
+
+            slice.forEach(post => {
+                list.insertAdjacentHTML('beforeend', renderArticleItem(post));
+            });
+
+            // Botão "mostrar mais"
+            if (state.displayedCount < postsToShow.length) {
+                btnMore.style.display = 'inline-block';
+            } else {
+                btnMore.style.display = 'none';
+            }
+        }
+
+        // ─────────────────────────────────────────────
+        // Filtros de categoria
+        // ─────────────────────────────────────────────
+        function buildCategoryFilters(posts) {
+            const filtersEl = document.getElementById('category-filters');
+
+            // Coleta categorias únicas a partir dos posts
+            const catMap = new Map(); // id → name
+            posts.forEach(post => {
+                try {
+                    const terms = post._embedded?.['wp:term'];
+                    if (!terms) return;
+                    const cats = terms[0];
+                    if (cats) cats.forEach(c => catMap.set(c.id, c.name));
+                } catch {}
+            });
+
+            // Adiciona um span por categoria
+            catMap.forEach((name, id) => {
+                const span = document.createElement('span');
+                span.textContent = name;
+                span.dataset.categoryId = id;
+                filtersEl.appendChild(span);
+            });
+        }
+
+        function applyFilters() {
+            const query = state.searchQuery.toLowerCase();
+            const catId = state.activeCategoryId;
+
+            state.filteredPosts = state.allPosts.filter(post => {
+                // Filtro de categoria
+                if (catId !== '') {
+                    const terms = post._embedded?.['wp:term']?.[0] || [];
+                    const hasCategory = terms.some(c => String(c.id) === String(catId));
+                    if (!hasCategory) return false;
+                }
+
+                // Filtro de busca (título + excerpt)
+                if (query) {
+                    const title = stripHtml(post.title?.rendered || '').toLowerCase();
+                    const excerpt = stripHtml(post.excerpt?.rendered || '').toLowerCase();
+                    if (!title.includes(query) && !excerpt.includes(query)) return false;
+                }
+
+                return true;
+            });
+
+            state.displayedCount = PER_PAGE;
+            renderArticlesList();
+        }
+
+        // ─────────────────────────────────────────────
+        // Eventos
+        // ─────────────────────────────────────────────
+        document.getElementById('category-filters').addEventListener('click', e => {
+            if (e.target.tagName !== 'SPAN') return;
+            document.querySelectorAll('#category-filters span').forEach(s => s.classList.remove('active'));
+            e.target.classList.add('active');
+            state.activeCategoryId = e.target.dataset.categoryId;
+            applyFilters();
+        });
+
+        let searchTimer;
+        document.getElementById('search-input').addEventListener('input', e => {
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(() => {
+                state.searchQuery = e.target.value;
+                applyFilters();
+            }, 300);
+        });
+
+        document.getElementById('btn-show-more').addEventListener('click', () => {
+            state.displayedCount += PER_PAGE;
+            renderArticlesList();
+        });
+
+        // ─────────────────────────────────────────────
+        // Carregamento inicial
+        // ─────────────────────────────────────────────
+        async function init() {
+            const loadingEl = document.getElementById('articles-loading');
+            const errorEl = document.getElementById('articles-error');
+
+            try {
+                // Carrega todos os posts com embed (categorias + imagem)
+                // Usa per_page=100 para ter uma boa quantidade; ajuste conforme necessário
+                const res = await fetch(`${API_BASE}/posts?per_page=100&_embed&orderby=date&order=desc`);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+                const posts = await res.json();
+                loadingEl.style.display = 'none';
+
+                if (!posts.length) {
+                    document.getElementById('articles-empty').style.display = 'block';
+                    return;
+                }
+
+                state.allPosts = posts;
+
+                // Destaque: primeiro post
+                renderFeatured(posts[0]);
+
+                // Filtros de categoria
+                buildCategoryFilters(posts);
+
+                // Lista começa com todos os posts
+                state.filteredPosts = posts;
+                state.displayedCount = PER_PAGE;
+                renderArticlesList();
+
+            } catch (err) {
+                console.error('Erro ao carregar artigos:', err);
+                loadingEl.style.display = 'none';
+                errorEl.style.display = 'block';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+
 </body>
 </html>

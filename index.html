@@ -49,104 +49,34 @@
     </div>
 
     <section class="container">
-    <h2 class="section-title" style="margin-bottom: 5px;">Panorama de Mercado</h2>
-    <p style="color: #666; margin-bottom: 30px;">Cotações em tempo real dos principais índices financeiros</p>
-    
-    <div id="market-data" class="market-cards-container">
-        <p>Carregando dados do mercado...</p>
-    </div>
-</section>
+        <h2 class="section-title" style="margin-bottom: 5px;">Panorama de Mercado</h2>
+        <p style="color: #666; margin-bottom: 30px;">Cotações em tempo real dos principais índices financeiros</p>
+        
+        <div id="market-data" class="market-cards-container">
+            <p>Carregando dados do mercado...</p>
+        </div>
+    </section>
     
     <section class="container">
         <h2 class="section-title">Últimos Artigos</h2>
-        <div class="articles-grid">
 
-        <article class="card">
-            <img src="IMG/ultimos_arquivos_perspectiva_para_o_mercado_em_2026.jpg" alt="Mercado">
-            <div class="card-body">
-                <h3>Perspectiva para o mercado em 2026</h3>
-                <button class="btn-more">Ler mais</button>
-            </div>
-        </article>
+        <!-- Estado de carregamento -->
+        <div id="articles-loading" class="articles-grid" style="display: flex; justify-content: center; padding: 40px; grid-column: 1/-1;">
+            <p style="color: #666;">Carregando artigos...</p>
+        </div>
 
-        <article class="card">
-            <img src="IMG/ultimos_artigos_analise_economica_do_trimestre.jpg" alt="Análise econômica">
-            <div class="card-body">
-                <h3>Análise econômica do trimestre</h3>
-                <button class="btn-more">Ler mais</button>
-            </div>
-        </article>
+        <!-- Grid de artigos (preenchido via JS) -->
+        <div id="articles-grid" class="articles-grid" style="display: none;"></div>
 
-        <article class="card">
-            <img src="IMG/ultimos_artigos_etica_e_integridade.jpg" alt="Ética">
-            <div class="card-body">
-                <h3>Ética e integridade 2026</h3>
-                <button class="btn-more">Ler mais</button>
-            </div>
-        </article>
+        <!-- Mensagem de erro (oculta por padrão) -->
+        <div id="articles-error" style="display: none; text-align: center; padding: 40px; color: #888;">
+            <p>Não foi possível carregar os artigos. Tente novamente mais tarde.</p>
+        </div>
 
-        <article class="card">
-            <img src="IMG/ultimos_artigos_como_o_clima_impacta_os_investimentos.jpg" alt="Clima e investimentos">
-            <div class="card-body">
-                <h3>Como o Clima Impacta os Investimentos</h3>
-                <button class="btn-more">Ler mais</button>
-            </div>
-        </article>
-
-        <article class="card">
-            <img src="IMG/ultimos_artigos_ia_na_tomada_de_decisão.jpg" alt="IA">
-            <div class="card-body">
-                <h3>IA na tomada de decisão</h3>
-                <button class="btn-more">Ler mais</button>
-            </div>
-        </article>
-
-        <article class="card">
-            <img src="IMG/ultimos_artigos_diversidade_em_conselhos.jpg" alt="Diversidade">
-            <div class="card-body">
-                <h3>Diversidade em Conselhos</h3>
-                <button class="btn-more">Ler mais</button>
-            </div>
-        </article>
-
-        <article class="card">
-            <img src="IMG/novas_leis_do_mercado_2026.jpg" alt="Leis de mercado">
-            <div class="card-body">
-                <h3>Novas leis de mercado 2026</h3>
-                <button class="btn-more">Ler mais</button>
-            </div>
-        </article>
-
-        <article class="card">
-            <img src="IMG/ultimos_artigos_resiliencia_corporativa.jpg" alt="Resiliência">
-            <div class="card-body">
-                <h3>Resiliência Corporativa</h3>
-                <button class="btn-more">Ler mais</button>
-            </div>
-        </article>
-
-        <article class="card">
-            <img src="IMG/ultimos_artigos_auditoria_e_controle_interno.jpg" alt="Auditoria">
-            <div class="card-body">
-                <h3>Auditoria e controle interno</h3>
-                <button class="btn-more">Ler mais</button>
-            </div>
-        </article>
-
-        <article class="card">
-            <img src="IMG/ultimos_artigos_exelencia_na_gestao_publica.jpg" alt="Gestão pública">
-            <div class="card-body">
-                <h3>Excelência na gestão pública</h3>
-                <button class="btn-more">Ler mais</button>
-            </div>
-        </article>
-
-    </div>
-
-    <div style="text-align: center; margin-top: 2.5rem;">
-        <a href="./HTML/artigos.html"><button class="btn-show-more">Ver mais artigos</button></a>
-    </div>
-</section>
+        <div style="text-align: center; margin-top: 2.5rem;">
+            <a href="./HTML/artigos.html"><button class="btn-show-more">Ver mais artigos</button></a>
+        </div>
+    </section>
 
     
     <footer>
@@ -186,5 +116,127 @@
     </footer>
 
     <script src="./SCRIPT/nav.js"></script>
+
+    <script>
+        // ─────────────────────────────────────────────
+        // Configuração da API
+        // ─────────────────────────────────────────────
+        const API_BASE = 'https://acbrasil.org.br/cms/wp-json/wp/v2';
+
+        // ─────────────────────────────────────────────
+        // Utilitários
+        // ─────────────────────────────────────────────
+
+        /**
+         * Extrai a URL da imagem destacada de um post com _embed.
+         * Tenta diferentes tamanhos em ordem de preferência.
+         */
+        function getFeaturedImageUrl(post) {
+            try {
+                const media = post._embedded?.['wp:featuredmedia']?.[0];
+                if (!media) return null;
+
+                // Tenta tamanho medium_large, depois medium, depois full
+                const sizes = media.media_details?.sizes;
+                if (sizes) {
+                    return (
+                        sizes.medium_large?.source_url ||
+                        sizes.medium?.source_url ||
+                        sizes.large?.source_url ||
+                        sizes.full?.source_url
+                    );
+                }
+                return media.source_url || null;
+            } catch {
+                return null;
+            }
+        }
+
+        /**
+         * Extrai o nome da primeira categoria de um post com _embed.
+         */
+        function getCategoryName(post) {
+            try {
+                const terms = post._embedded?.['wp:term'];
+                if (!terms) return '';
+                // terms[0] são as categorias
+                const cats = terms[0];
+                if (cats && cats.length > 0) return cats[0].name;
+            } catch {
+                return '';
+            }
+            return '';
+        }
+
+        /**
+         * Remove tags HTML de uma string.
+         */
+        function stripHtml(html) {
+            const tmp = document.createElement('div');
+            tmp.innerHTML = html;
+            return tmp.textContent || tmp.innerText || '';
+        }
+
+        // ─────────────────────────────────────────────
+        // Carrega e renderiza os artigos na home
+        // ─────────────────────────────────────────────
+        async function loadHomeArticles() {
+            const grid = document.getElementById('articles-grid');
+            const loading = document.getElementById('articles-loading');
+            const errorDiv = document.getElementById('articles-error');
+
+            try {
+                // Busca os 10 posts mais recentes com dados embedados (categorias + imagem)
+                const res = await fetch(`${API_BASE}/posts?per_page=10&_embed&orderby=date&order=desc`);
+
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+                const posts = await res.json();
+
+                if (!posts.length) {
+                    loading.style.display = 'none';
+                    errorDiv.style.display = 'block';
+                    errorDiv.querySelector('p').textContent = 'Nenhum artigo encontrado.';
+                    return;
+                }
+
+                // Gera os cards
+                const html = posts.map(post => {
+                    const title = stripHtml(post.title?.rendered || 'Sem título');
+                    const imgUrl = getFeaturedImageUrl(post);
+                    const postUrl = post.link || '#';
+
+                    const imgTag = imgUrl
+                        ? `<img src="${imgUrl}" alt="${title}" loading="lazy" onerror="this.style.display='none'">`
+                        : `<div style="height:180px;background:#eee;display:flex;align-items:center;justify-content:center;color:#aaa;">Sem imagem</div>`;
+
+                    return `
+                        <article class="card">
+                            ${imgTag}
+                            <div class="card-body">
+                                <h3>${title}</h3>
+                                <a href="${postUrl}" target="_blank" rel="noopener">
+                                    <button class="btn-more">Ler mais</button>
+                                </a>
+                            </div>
+                        </article>
+                    `;
+                }).join('');
+
+                loading.style.display = 'none';
+                grid.innerHTML = html;
+                grid.style.display = '';
+
+            } catch (err) {
+                console.error('Erro ao carregar artigos:', err);
+                loading.style.display = 'none';
+                errorDiv.style.display = 'block';
+            }
+        }
+
+        // Inicia o carregamento quando o DOM estiver pronto
+        document.addEventListener('DOMContentLoaded', loadHomeArticles);
+    </script>
+
 </body>
 </html>
