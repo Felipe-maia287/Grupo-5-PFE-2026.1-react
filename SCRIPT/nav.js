@@ -56,7 +56,7 @@ async function carregarDadosBolsa() {
     if (!marketDataContainer) return; 
 
     // chave
-    const minhaChave = 'adf1d580';
+    const minhaChave = '8e58a332';
     const url = `https://api.hgbrasil.com/finance?format=json-cors&key=${minhaChave}`;
     
     try {
