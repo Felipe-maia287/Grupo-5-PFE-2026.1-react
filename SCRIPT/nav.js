@@ -55,7 +55,6 @@ async function carregarDadosBolsa() {
     const marketDataContainer = document.getElementById('market-data');
     if (!marketDataContainer) return; 
 
-    // chave
     const minhaChave = '8e58a332';
     const url = `https://api.hgbrasil.com/finance?format=json-cors&key=${minhaChave}`;
     
@@ -65,37 +64,57 @@ async function carregarDadosBolsa() {
         
         const dados = await resposta.json();
         
-        const ibovespa = dados.results.stocks.IBOVESPA;
-        const nasdaq = dados.results.stocks.NASDAQ;
-        const dolar = dados.results.currencies.USD;
+        // Verificação de segurança: se a API falhar em entregar os blocos, evita que o código quebre
+        const ibovespaDados = dados?.results?.stocks?.IBOVESPA;
+        const nasdaqDados = dados?.results?.stocks?.NASDAQ;
+        const dolarDados = dados?.results?.currencies?.USD;
 
-        const getCorVariacao = (variacao) => variacao >= 0 ? 'text-up' : 'text-down';
-        const getSinal = (variacao) => variacao > 0 ? '+' : '';
-        const getIcone = (variacao) => variacao >= 0 ? '▲' : '▼'; 
+        // Funções auxiliares para formatação visual
+        const getCorVariacao = (variacao) => (variacao || 0) >= 0 ? 'text-up' : 'text-down';
+        const getSinal = (variacao) => (variacao || 0) > 0 ? '+' : '';
+        const getIcone = (variacao) => (variacao || 0) >= 0 ? '▲' : '▼'; 
 
-        // Injeta os cartões modernos no HTML
+        // Tratando o Ibovespa (Garante exibição mesmo se vier null no fim de semana)
+        const ibovPontos = ibovespaDados && ibovespaDados.points !== null 
+            ? `${ibovespaDados.points.toLocaleString('pt-BR')} <span style="font-size: 1rem; color: #aaa; font-weight: 500;">pts</span>`
+            : 'Fechado';
+        const ibovVar = ibovespaDados?.variation ?? 0;
+
+        // Tratando a NASDAQ
+        const nasdaqPontos = nasdaqDados && nasdaqDados.points !== null 
+            ? `${nasdaqDados.points.toLocaleString('pt-BR')} <span style="font-size: 1rem; color: #aaa; font-weight: 500;">pts</span>`
+            : 'Fechado';
+        const nasdaqVar = nasdaqDados?.variation ?? 0;
+
+        // Tratando o Dólar
+        const dolarValor = dolarDados && dolarDados.buy !== null
+            ? `<span style="font-size: 1.2rem; color: #aaa; font-weight: 500;">R$</span> ${dolarDados.buy.toFixed(2).replace('.', ',')}`
+            : 'Indisponível';
+        const dolarVar = dolarDados?.variation ?? 0;
+
+        // Injeta os cartões com os dados validados
         marketDataContainer.innerHTML = `
             <div class="market-card">
                 <div class="market-card-title">Ibovespa <span>🇧🇷</span></div>
-                <div class="market-card-value">${ibovespa.points.toLocaleString('pt-BR')} <span style="font-size: 1rem; color: #aaa; font-weight: 500;">pts</span></div>
-                <div class="market-card-variation ${getCorVariacao(ibovespa.variation)}">
-                    ${getIcone(ibovespa.variation)} ${getSinal(ibovespa.variation)}${ibovespa.variation}%
+                <div class="market-card-value">${ibovPontos}</div>
+                <div class="market-card-variation ${getCorVariacao(ibovVar)}">
+                    ${getIcone(ibovVar)} ${getSinal(ibovVar)}${ibovVar}%
                 </div>
             </div>
 
             <div class="market-card">
                 <div class="market-card-title">NASDAQ <span>🇺🇸</span></div>
-                <div class="market-card-value">${nasdaq.points.toLocaleString('pt-BR')} <span style="font-size: 1rem; color: #aaa; font-weight: 500;">pts</span></div>
-                <div class="market-card-variation ${getCorVariacao(nasdaq.variation)}">
-                    ${getIcone(nasdaq.variation)} ${getSinal(nasdaq.variation)}${nasdaq.variation}%
+                <div class="market-card-value">${nasdaqPontos}</div>
+                <div class="market-card-variation ${getCorVariacao(nasdaqVar)}">
+                    ${getIcone(nasdaqVar)} ${getSinal(nasdaqVar)}${nasdaqVar}%
                 </div>
             </div>
 
             <div class="market-card">
                 <div class="market-card-title">Dólar (Comercial) <span>💵</span></div>
-                <div class="market-card-value"><span style="font-size: 1.2rem; color: #aaa; font-weight: 500;">R$</span> ${dolar.buy.toFixed(2).replace('.', ',')}</div>
-                <div class="market-card-variation ${getCorVariacao(dolar.variation)}">
-                    ${getIcone(dolar.variation)} ${getSinal(dolar.variation)}${dolar.variation}%
+                <div class="market-card-value">${dolarValor}</div>
+                <div class="market-card-variation ${getCorVariacao(dolarVar)}">
+                    ${getIcone(dolarVar)} ${getSinal(dolarVar)}${dolarVar}%
                 </div>
             </div>
         `;
