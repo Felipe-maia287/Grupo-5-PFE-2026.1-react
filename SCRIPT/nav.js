@@ -54,8 +54,8 @@ document.addEventListener("DOMContentLoaded", function() {
 async function carregarDadosBolsa() {
     const marketDataContainer = document.getElementById('market-data');
     if (!marketDataContainer) return; // Se não achar a seção de mercado, para por aqui
-
-    const url = `https://api.hgbrasil.com/finance?format=json-cors&key=free`;
+    const minhaChave = 'adf1d580';
+    const url = `https://api.hgbrasil.com/finance?format=json-cors&key=${minhaChave}`;
     
     try {
         const resposta = await fetch(url);
