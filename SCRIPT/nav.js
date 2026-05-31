@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // ==========================================
     // 2. CHAMA A FUNÇÃO DA API DA BOLSA
     // ==========================================
-    carregarDadosBolsa(); // É ESTA LINHA QUE FALTAVA PARA ACORDAR A API!
+    carregarDadosBolsa();
 
     // ==========================================
     // 3. DESTACAR LINK ATIVO NA NAVEGAÇÃO
@@ -49,16 +49,20 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 // ==========================================
-// A FUNÇÃO DA API EM SI 
+// A FUNÇÃO DA API EM SI
 // ==========================================
 async function carregarDadosBolsa() {
     const marketDataContainer = document.getElementById('market-data');
-    if (!marketDataContainer) return; // Se não achar a seção de mercado, para por aqui
+    if (!marketDataContainer) return; 
+
+    // chave
     const minhaChave = 'adf1d580';
     const url = `https://api.hgbrasil.com/finance?format=json-cors&key=${minhaChave}`;
     
     try {
         const resposta = await fetch(url);
+        if (!resposta.ok) throw new Error(`HTTP erro! status: ${resposta.status}`);
+        
         const dados = await resposta.json();
         
         const ibovespa = dados.results.stocks.IBOVESPA;
