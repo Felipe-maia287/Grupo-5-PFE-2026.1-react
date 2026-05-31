@@ -1,55 +1,64 @@
 document.addEventListener("DOMContentLoaded", function() {
     
     // ==========================================
-    // 1. LÓGICA DO MENU HAMBÚRGUER
+    // 1. PRIMEIRA COISA: ACORDA A API DA BOLSA
     // ==========================================
-    var menuButton = document.getElementById("menu-button");
-    var menu = document.getElementById("menu");
+    // Movemos para o topo para garantir que ela rode independente de erros no menu
+    carregarDadosBolsa(); 
 
-    if (menuButton && menu) {
-        // Abre/fecha ao clicar no botão hambúrguer
-        menuButton.addEventListener("click", function(e) {
-            e.stopPropagation();
-            menu.style.display = menu.style.display === "block" ? "none" : "block";
-        });
+    // ==========================================
+    // 2. LÓGICA DO MENU HAMBÚRGUER (Protegida)
+    // ==========================================
+    try {
+        var menuButton = document.getElementById("menu-button");
+        var menu = document.getElementById("menu");
 
-        // Fecha ao clicar em qualquer link dentro do menu
-        menu.querySelectorAll("a").forEach(function(link) {
-            link.addEventListener("click", function() {
-                menu.style.display = "none";
+        if (menuButton && menu) {
+            menuButton.addEventListener("click", function(e) {
+                e.stopPropagation();
+                menu.style.display = menu.style.display === "block" ? "none" : "block";
             });
-        });
 
-        // Fecha ao clicar fora do menu
-        document.addEventListener("click", function(e) {
-            if (!menu.contains(e.target) && e.target !== menuButton) {
-                menu.style.display = "none";
-            }
-        });
+            menu.querySelectorAll("a").forEach(function(link) {
+                link.addEventListener("click", function() {
+                    menu.style.display = "none";
+                });
+            });
+
+            document.addEventListener("click", function(e) {
+                if (!menu.contains(e.target) && e.target !== menuButton) {
+                    menu.style.display = "none";
+                }
+            });
+        }
+    } catch (err) {
+        console.error("Erro na lógica do menu:", err);
     }
 
     // ==========================================
-    // 2. CHAMA A FUNÇÃO DA API DA BOLSA
+    // 3. DESTACAR LINK ATIVO (Seguro para GitHub Pages)
     // ==========================================
-    carregarDadosBolsa();
-
-    // ==========================================
-    // 3. DESTACAR LINK ATIVO NA NAVEGAÇÃO
-    // ==========================================
-    var currentPage = window.location.pathname.split('/').pop();
-    document.querySelectorAll('.nav-links a').forEach(function(link) {
-        var linkPage = link.getAttribute('href').split('/').pop();
-        if (linkPage && linkPage === currentPage) {
-            link.style.color = 'var(--accent-yellow)';
-            link.style.borderBottom = '2px solid var(--accent-yellow)';
-            link.style.paddingBottom = '2px';
-        }
-    });
+    try {
+        var currentPage = window.location.pathname.split('/').pop() || 'index.html';
+        document.querySelectorAll('.nav-links a').forEach(function(link) {
+            var hrefAttr = link.getAttribute('href');
+            if (hrefAttr) {
+                var linkPage = hrefAttr.split('/').pop();
+                if (linkPage && linkPage === currentPage) {
+                    link.style.color = 'var(--accent-yellow)';
+                    link.style.borderBottom = '2px solid var(--accent-yellow)';
+                    link.style.paddingBottom = '2px';
+                }
+            }
+        });
+    } catch (err) {
+        console.error("Erro ao destacar link ativo:", err);
+    }
 });
 
 
 // ==========================================
-// A FUNÇÃO DA API EM SI
+// A FUNÇÃO DA API DA BOLSA
 // ==========================================
 async function carregarDadosBolsa() {
     const marketDataContainer = document.getElementById('market-data');
@@ -60,39 +69,42 @@ async function carregarDadosBolsa() {
     
     try {
         const resposta = await fetch(url);
-        if (!resposta.ok) throw new Error(`HTTP erro! status: ${resposta.status}`);
+        
+        // Se a HG Brasil bloquear por limite ou erro, joga o código para o catch
+        if (!resposta.ok) {
+            throw new Error(`HG Brasil retornou status ${resposta.status}`);
+        }
         
         const dados = await resposta.json();
         
-        // Verificação de segurança: se a API falhar em entregar os blocos, evita que o código quebre
-        const ibovespaDados = dados?.results?.stocks?.IBOVESPA;
-        const nasdaqDados = dados?.results?.stocks?.NASDAQ;
-        const dolarDados = dados?.results?.currencies?.USD;
+        // Verifica se a estrutura de dados retornada está correta
+        if (!dados || !dados.results) {
+            throw new Error("Dados da API vieram inválidos ou vazios.");
+        }
+        
+        const ibovespaDados = dados.results.stocks?.IBOVESPA;
+        const nasdaqDados = dados.results.stocks?.NASDAQ;
+        const dolarDados = dados.results.currencies?.USD;
 
-        // Funções auxiliares para formatação visual
         const getCorVariacao = (variacao) => (variacao || 0) >= 0 ? 'text-up' : 'text-down';
         const getSinal = (variacao) => (variacao || 0) > 0 ? '+' : '';
         const getIcone = (variacao) => (variacao || 0) >= 0 ? '▲' : '▼'; 
 
-        // Tratando o Ibovespa (Garante exibição mesmo se vier null no fim de semana)
-        const ibovPontos = ibovespaDados && ibovespaDados.points !== null 
+        const ibovPontos = ibovespaDados && ibovespaDados.points !== null && ibovespaDados.points !== undefined
             ? `${ibovespaDados.points.toLocaleString('pt-BR')} <span style="font-size: 1rem; color: #aaa; font-weight: 500;">pts</span>`
             : 'Fechado';
         const ibovVar = ibovespaDados?.variation ?? 0;
 
-        // Tratando a NASDAQ
-        const nasdaqPontos = nasdaqDados && nasdaqDados.points !== null 
+        const nasdaqPontos = nasdaqDados && nasdaqDados.points !== null && nasdaqDados.points !== undefined
             ? `${nasdaqDados.points.toLocaleString('pt-BR')} <span style="font-size: 1rem; color: #aaa; font-weight: 500;">pts</span>`
             : 'Fechado';
         const nasdaqVar = nasdaqDados?.variation ?? 0;
 
-        // Tratando o Dólar
-        const dolarValor = dolarDados && dolarDados.buy !== null
+        const dolarValor = dolarDados && dolarDados.buy !== null && dolarDados.buy !== undefined
             ? `<span style="font-size: 1.2rem; color: #aaa; font-weight: 500;">R$</span> ${dolarDados.buy.toFixed(2).replace('.', ',')}`
             : 'Indisponível';
         const dolarVar = dolarDados?.variation ?? 0;
 
-        // Injeta os cartões com os dados validados
         marketDataContainer.innerHTML = `
             <div class="market-card">
                 <div class="market-card-title">Ibovespa <span>🇧🇷</span></div>
@@ -119,9 +131,9 @@ async function carregarDadosBolsa() {
             </div>
         `;
     } catch (erro) {
-        console.error("Erro ao carregar a API da Bolsa:", erro);
+        console.error("Erro detalhado ao carregar a API da Bolsa:", erro);
         marketDataContainer.innerHTML = `
-            <p style="color: #dc2626; text-align: center; width: 100%; font-weight: bold;">Erro ao carregar dados de mercado. Verifique sua conexão.</p>
+            <p style="color: #dc2626; text-align: center; width: 100%; font-weight: bold;">Erro ao carregar dados de mercado. Verifique sua conexão ou limite de acessos.</p>
         `;
     }
 }
