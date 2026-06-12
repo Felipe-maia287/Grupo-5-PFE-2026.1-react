@@ -1,18 +1,19 @@
-# ACBrasil — Versão Vanilla
+# ACBrasil — Versão React
 
-Repositório da versão **HTML, CSS e JavaScript puro** do site oficial da ACBrasil, desenvolvida pelo grupo como parte do processo de reconstrução e modernização da presença digital da organização.
+Repositório da versão **React simples com Vite** do site oficial da ACBrasil, desenvolvida pelo grupo como parte do processo de reconstrução e modernização da presença digital da organização.
 
 ---
 
 ## Sobre o Projeto
 
-Este projeto consiste na implementação do site da ACBrasil utilizando tecnologias web nativas — sem frameworks ou bibliotecas externas — garantindo leveza, performance e total controle sobre o código.
+Este projeto consiste na implementação do site da ACBrasil em uma aplicação React de página única, mantendo o CSS e as imagens do projeto original e organizando as páginas em componentes reutilizáveis.
 
-A versão vanilla serve como base sólida e documentada do projeto, focando em:
+A versão React foca em:
 
-- Estrutura semântica com HTML5
-- Estilização modular com CSS3
-- Interatividade com JavaScript puro (ES6+)
+- Componentes para navegação, rodapé e páginas
+- Rotas simples com hash (`#/artigos`, `#/contato`, etc.)
+- Consumo das APIs de artigos e mercado usando `useEffect`
+- Reaproveitamento do CSS e dos assets existentes
 
 ---
 
@@ -20,9 +21,25 @@ A versão vanilla serve como base sólida e documentada do projeto, focando em:
 
 | Tecnologia | Descrição |
 |---|---|
-| HTML5 | Estrutura e marcação semântica |
+| React | Componentização e estado da interface |
+| Vite | Servidor de desenvolvimento e build |
 | CSS3 | Estilização, responsividade e animações |
-| JavaScript ES6+ | Interatividade e manipulação do DOM |
+| JavaScript ES6+ | Lógica da aplicação e chamadas de API |
+
+---
+
+## Como rodar
+
+```bash
+npm install
+npm run dev
+```
+
+Para gerar a versão de produção:
+
+```bash
+npm run build
+```
 
 ---
 
