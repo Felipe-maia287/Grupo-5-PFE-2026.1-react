@@ -3,7 +3,7 @@ import logoUrl from '../IMG/logo-acb-fundo-escuro-1.png';
 import { benefits, missionCards, navItems, services, teamMembers } from './data.js';
 
 const API_BASE = 'https://acbrasil.org.br/cms/wp-json/wp/v2';
-const MARKET_API_URL = 'https://api.hgbrasil.com/finance?format=json-cors&key=8e58a332';
+const MARKET_API_URL = 'https://economia.awesomeapi.com.br/json/last/USD-BRL,EUR-BRL,BTC-BRL';
 const PER_PAGE = 5;
 
 const extraRoutes = [
@@ -36,11 +36,19 @@ function getCurrentRoute() {
 
   if (rawHash) {
     const normalizedHash = rawHash.startsWith('/') ? rawHash : `/${rawHash}`;
-    return normalizedHash.replace(/\/$/, '') || '/';
+    const path = normalizedHash.replace(/\/$/, '') || '/';
+    if (path.startsWith('/artigo/')) return '/artigo';
+    return path;
   }
 
   const fileName = window.location.pathname.split('/').pop();
   return legacyPathMap[fileName] || '/';
+}
+
+function getCurrentArticleId() {
+  const hash = window.location.hash.replace('#', '');
+  const match = hash.match(/^\/artigo\/(\d+)/);
+  return match ? match[1] : null;
 }
 
 function stripHtml(html = '') {
@@ -290,15 +298,15 @@ function MarketData() {
     async function loadMarketData() {
       try {
         const response = await fetch(MARKET_API_URL);
-        if (!response.ok) throw new Error(`HG Brasil retornou status ${response.status}`);
+        if (!response.ok) throw new Error(`API retornou ${response.status}`);
 
         const data = await response.json();
-        if (!data?.results) throw new Error('Dados da API vieram inválidos ou vazios.');
+        if (!data?.USDBRL) throw new Error('Dados da API vieram inválidos.');
 
         if (!ignore) {
           setMarketState({
             status: 'success',
-            cards: buildMarketCards(data.results),
+            cards: buildMarketCards(data),
           });
         }
       } catch (error) {
@@ -345,53 +353,58 @@ function MarketData() {
   );
 }
 
-function buildMarketCards(results) {
-  const ibovespa = results.stocks?.IBOVESPA;
-  const nasdaq = results.stocks?.NASDAQ;
-  const dollar = results.currencies?.USD;
+function buildMarketCards(data) {
+  const usd = data?.USDBRL;
+  const eur = data?.EURBRL;
+  const btc = data?.BTCBRL;
+
+  const fmt = (v) => {
+    const n = Number(v ?? 0);
+    return isNaN(n) ? 0 : Math.round(n * 100) / 100;
+  };
 
   return [
-    {
-      title: 'Ibovespa',
-      badge: 'BR',
-      value:
-        ibovespa?.points !== null && ibovespa?.points !== undefined ? (
-          <>
-            {ibovespa.points.toLocaleString('pt-BR')}{' '}
-            <span className="market-card-unit">pts</span>
-          </>
-        ) : (
-          'Fechado'
-        ),
-      variation: ibovespa?.variation ?? 0,
-    },
-    {
-      title: 'NASDAQ',
-      badge: 'US',
-      value:
-        nasdaq?.points !== null && nasdaq?.points !== undefined ? (
-          <>
-            {nasdaq.points.toLocaleString('pt-BR')}{' '}
-            <span className="market-card-unit">pts</span>
-          </>
-        ) : (
-          'Fechado'
-        ),
-      variation: nasdaq?.variation ?? 0,
-    },
     {
       title: 'Dólar (Comercial)',
       badge: 'USD',
       value:
-        dollar?.buy !== null && dollar?.buy !== undefined ? (
+        usd?.bid != null ? (
           <>
             <span className="market-card-unit">R$</span>{' '}
-            {dollar.buy.toFixed(2).replace('.', ',')}
+            {Number(usd.bid).toFixed(2).replace('.', ',')}
           </>
         ) : (
           'Indisponível'
         ),
-      variation: dollar?.variation ?? 0,
+      variation: fmt(usd?.pctChange),
+    },
+    {
+      title: 'Euro',
+      badge: 'EUR',
+      value:
+        eur?.bid != null ? (
+          <>
+            <span className="market-card-unit">R$</span>{' '}
+            {Number(eur.bid).toFixed(2).replace('.', ',')}
+          </>
+        ) : (
+          'Indisponível'
+        ),
+      variation: fmt(eur?.pctChange),
+    },
+    {
+      title: 'Bitcoin',
+      badge: 'BTC',
+      value:
+        btc?.bid != null ? (
+          <>
+            <span className="market-card-unit">R$</span>{' '}
+            {Number(btc.bid).toLocaleString('pt-BR', { maximumFractionDigits: 0 })}
+          </>
+        ) : (
+          'Indisponível'
+        ),
+      variation: fmt(btc?.pctChange),
     },
   ];
 }
@@ -408,7 +421,7 @@ function MarketCard({ card }) {
       <div className="market-card-value">{card.value}</div>
       <div className={`market-card-variation ${isPositive ? 'text-up' : 'text-down'}`}>
         {isPositive ? '▲' : '▼'} {variation > 0 ? '+' : ''}
-        {variation}%
+        {variation.toFixed(2)}%
       </div>
     </article>
   );
@@ -492,7 +505,7 @@ function PostCard({ post }) {
       )}
       <div className="card-body">
         <h3>{title}</h3>
-        <a href={post.link || '#'} target="_blank" rel="noopener noreferrer" className="btn-more article-button-link">
+        <a href={`#/artigo/${post.id}`} className="btn-more article-button-link">
           Ler mais
         </a>
       </div>
@@ -657,7 +670,7 @@ function FeaturedArticle({ post }) {
         <h3>{title}</h3>
         <p>{excerpt}</p>
         <br />
-        <a href={post.link || '#'} className="read-more-link" target="_blank" rel="noopener noreferrer">
+        <a href={`#/artigo/${post.id}`} className="read-more-link">
           Leia o artigo completo &gt;
         </a>
       </div>
@@ -692,11 +705,100 @@ function ArticleItem({ post }) {
         <span className="category">{getCategoryName(post)}</span>
         <h4>{title}</h4>
         <p>{excerpt}</p>
-        <a href={post.link || '#'} target="_blank" rel="noopener noreferrer" className="read-more-link">
+        <a href={`#/artigo/${post.id}`} className="read-more-link">
           Leia o artigo completo &gt;
         </a>
       </div>
     </article>
+  );
+}
+
+function ArticleDetailPage() {
+  const [postId, setPostId] = useState(() => getCurrentArticleId());
+  const [post, setPost] = useState(null);
+  const [status, setStatus] = useState('loading');
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      const newId = getCurrentArticleId();
+      if (newId !== postId) {
+        setPostId(newId);
+        setStatus('loading');
+        setPost(null);
+        window.scrollTo({ top: 0 });
+      }
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, [postId]);
+
+  useEffect(() => {
+    if (!postId) { setStatus('error'); return; }
+    let ignore = false;
+
+    async function loadPost() {
+      try {
+        const response = await fetch(`${API_BASE}/posts/${postId}?_embed`);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        if (!ignore) {
+          setPost(data);
+          setStatus('success');
+          document.title = `${stripHtml(data.title?.rendered || 'Artigo')} - ACBrasil`;
+        }
+      } catch {
+        if (!ignore) setStatus('error');
+      }
+    }
+
+    loadPost();
+    return () => { ignore = true; };
+  }, [postId]);
+
+  if (status === 'loading') {
+    return (
+      <main className="container" style={{ minHeight: '50vh', paddingTop: '4rem' }}>
+        <p style={{ color: '#666' }}>Carregando artigo...</p>
+      </main>
+    );
+  }
+
+  if (status === 'error') {
+    return (
+      <main className="container" style={{ minHeight: '50vh', paddingTop: '4rem' }}>
+        <p style={{ color: '#888', marginBottom: '2rem' }}>Artigo não encontrado.</p>
+        <a href="#/artigos" className="btn-show-more btn-link-button">← Voltar para Artigos</a>
+      </main>
+    );
+  }
+
+  const title = stripHtml(post.title?.rendered || '');
+  const content = post.content?.rendered || '';
+  const imageUrl = getFeaturedImageUrl(post);
+  const category = getCategoryName(post);
+  const date = post.date
+    ? new Date(post.date).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })
+    : '';
+
+  return (
+    <main className="article-detail">
+      {imageUrl && (
+        <div className="article-detail-hero" style={{ backgroundImage: `url(${imageUrl})` }} />
+      )}
+      <div className="container article-detail-body">
+        <a href="#/artigos" className="article-back-link">← Voltar para Artigos</a>
+        {category && <span className="article-detail-category">{category}</span>}
+        <h1 className="article-detail-title">{title}</h1>
+        {date && <p className="article-detail-date">{date}</p>}
+        <div
+          className="article-detail-content"
+          dangerouslySetInnerHTML={{ __html: content }}
+        />
+        <div style={{ textAlign: 'center', marginTop: '3rem' }}>
+          <a href="#/artigos" className="btn-show-more btn-link-button">← Voltar para Artigos</a>
+        </div>
+      </div>
+    </main>
   );
 }
 
@@ -753,12 +855,14 @@ function AboutPage() {
         <div className="team-grid">
           {teamMembers.map((member) => (
             <article className="team-card" key={member.name}>
-              <Avatar />
+              <Avatar name={member.name} />
               <h4>{member.name}</h4>
               <p>{member.role}</p>
-              <a href={member.linkedin} target="_blank" rel="noopener noreferrer">
-                Linkedin
-              </a>
+              {member.linkedin && member.linkedin !== '#' && (
+                <a href={member.linkedin} target="_blank" rel="noopener noreferrer">
+                  Linkedin
+                </a>
+              )}
             </article>
           ))}
         </div>
@@ -775,14 +879,11 @@ function AboutPage() {
   );
 }
 
-function Avatar() {
+function Avatar({ name }) {
+  const url = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=002B5B&color=f4b41a&size=128&bold=true&font-size=0.38`;
   return (
-    <div className="team-avatar" aria-hidden="true">
-      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <rect width="100" height="100" fill="#dde4ed" />
-        <circle cx="50" cy="36" r="22" fill="#a0b4cc" />
-        <ellipse cx="50" cy="95" rx="38" ry="26" fill="#a0b4cc" />
-      </svg>
+    <div className="team-avatar">
+      <img src={url} alt={name} />
     </div>
   );
 }
@@ -940,6 +1041,7 @@ function NotFoundPage() {
 
 const pageComponents = {
   '/': HomePage,
+  '/artigo': ArticleDetailPage,
   '/artigos': ArticlesPage,
   '/contato': ContactPage,
   '/oque-fazemos': WhatWeDoPage,

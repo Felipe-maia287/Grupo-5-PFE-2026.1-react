@@ -120,4 +120,39 @@ export const teamMembers = [
     role: 'Sócio Diretor de Relações Institucionais',
     linkedin: 'https://www.linkedin.com/in/henrique-bravo/',
   },
+  {
+    name: 'Ítalo Martins',
+    role: 'Membro do Conselho',
+    linkedin: '#',
+  },
+  {
+    name: 'Manoel Carnúba',
+    role: 'Membro do Conselho',
+    linkedin: '#',
+  },
+  {
+    name: 'Paulo Sardinha',
+    role: 'Membro do Conselho',
+    linkedin: '#',
+  },
+  {
+    name: 'Ricardo Gentili',
+    role: 'Membro do Conselho',
+    linkedin: '#',
+  },
+  {
+    name: 'Roque Martins',
+    role: 'Membro do Conselho',
+    linkedin: '#',
+  },
+  {
+    name: 'Sérgio Araujo',
+    role: 'Membro do Conselho',
+    linkedin: '#',
+  },
+  {
+    name: 'Telmo Bauler',
+    role: 'Membro do Conselho',
+    linkedin: '#',
+  },
 ];
