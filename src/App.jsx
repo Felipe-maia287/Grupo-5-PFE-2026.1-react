@@ -130,7 +130,7 @@ function Navbar({ currentRoute }) {
     <nav>
       <div className="logo-container">
         <a href="#/" aria-label="Ir para a página inicial">
-          <img src={logoUrl} alt="ACB Logo" style={{ height: 40 }} />
+          <img src={logoUrl} alt="ACB Logo" className="nav-logo" />
         </a>
       </div>
 
